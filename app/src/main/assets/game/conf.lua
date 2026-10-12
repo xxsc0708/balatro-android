@@ -3,7 +3,8 @@ _DEMO = false
 
 function love.conf(t)
     t.identity = "balatro"
-    t.version = "11.4"
+    -- This Android build targets the bundled LOVE 12 runtime.
+    t.version = "12.0"
     t.console = false
     t.accelerometerjoystick = false
     t.externalstorage = true
