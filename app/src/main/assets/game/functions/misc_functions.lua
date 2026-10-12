@@ -29,7 +29,17 @@ function GET_DISPLAYINFO(screenmode, display)
 
     --Get the render resolution and desktop resolution, this is a workaround to a known OpenGL issue where windows doesn't supply the correct DPI scaling factor
     local render_w, render_h = love.window.getDesktopDimensions(i)
-    local unscaled_dims = love.window.getFullscreenModes(i)[1]
+    -- Android may expose no exclusive fullscreen modes. Use the current
+    -- landscape surface there; fall back to desktop dimensions elsewhere.
+    local fullscreen_modes = love.window.getFullscreenModes(i)
+    if #fullscreen_modes == 0 then
+      local fallback_w, fallback_h = render_w, render_h
+      if love.system.getOS() == 'Android' or fallback_w <= 0 or fallback_h <= 0 then
+        fallback_w, fallback_h = realw, realh
+      end
+      fullscreen_modes = {{width = fallback_w, height = fallback_h}}
+    end
+    local unscaled_dims = fullscreen_modes[1]
 
     --determine the DPI scale here, this can be used to determine the actual render resolution per display
     G.SETTINGS.WINDOW.DISPLAYS[i].DPI_scale = 1--math.floor((0.5*unscaled_dims.width/render_w + 0.5*unscaled_dims.height/render_h)*500 + 0.5)/500
@@ -37,7 +47,7 @@ function GET_DISPLAYINFO(screenmode, display)
 
     if screenmode == 'Fullscreen' then --Iterate through all possible screenmodes and populate the screen_resolutions table
                                        --if the real resolution of the window is found, make sure we return that value
-      for _, v in ipairs(love.window.getFullscreenModes(i)) do
+      for _, v in ipairs(fullscreen_modes) do
         local _w, _h = v.width*G.SETTINGS.WINDOW.DISPLAYS[i].DPI_scale, v.height*G.SETTINGS.WINDOW.DISPLAYS[i].DPI_scale
         if _w <= G.SETTINGS.WINDOW.DISPLAYS[i].MONITOR_DIMS.width and _h <= G.SETTINGS.WINDOW.DISPLAYS[i].MONITOR_DIMS.height then
           G.SETTINGS.WINDOW.DISPLAYS[i].screen_resolutions.strings[#G.SETTINGS.WINDOW.DISPLAYS[i].screen_resolutions.strings+1] = ''..v.width..' X '..v.height
