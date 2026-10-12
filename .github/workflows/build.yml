@@ -14,51 +14,56 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
-    env:
-      ANDROID_HOME: /usr/local/lib/android/sdk
-      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Install Android SDK packages
+      - name: Locate Android SDK
+        id: sdk
         run: |
-          sdkmanager --install \
+          set -x
+          for p in "$ANDROID_HOME" "$ANDROID_SDK_ROOT" "$HOME/Android/Sdk" "/usr/local/lib/android/sdk"; do
+            if [ -n "$p" ] && [ -d "$p" ]; then
+              echo "FOUND_SDK=$p" >> "$GITHUB_OUTPUT"
+              break
+            fi
+          done
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          ls -la /usr/local/lib/android/sdk 2>&1 || true
+          which sdkmanager || true
+          sdkmanager --version 2>&1 || true
+
+      - name: Install SDK packages
+        run: |
+          set -x
+          SDK="${{ steps.sdk.outputs.FOUND_SDK }}"
+          echo "Using SDK: $SDK"
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK" >> "$GITHUB_ENV"
+          yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
+          "$SDK/cmdline-tools/latest/bin/sdkmanager" \
             "platform-tools" \
             "platforms;android-35" \
             "build-tools;35.0.0" \
             "ndk;27.3.13750724" \
-            "cmake;3.22.1"
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager --list_installed
+            "cmake;3.22.1" 2>&1
+          "$SDK/cmdline-tools/latest/bin/sdkmanager" --list_installed 2>&1
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleNormalDebug --no-daemon --stacktrace
-        env:
-          GRADLE_OPTS: "-Xmx4g -Dorg.gradle.jvmargs=-Xmx4g"
+        run: ./gradlew assembleNormalDebug --no-daemon --stacktrace 2>&1
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
