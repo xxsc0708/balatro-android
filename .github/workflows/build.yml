@@ -58,6 +58,11 @@ jobs:
             "cmake;3.22.1" 2>&1
           "$SDK/cmdline-tools/latest/bin/sdkmanager" --list_installed 2>&1
 
+      - name: Remove unused SDL example wrappers
+        run: |
+          rm -- app/src/main/cpp/megasource/libs/SDL2/android-project/gradle/wrapper/gradle-wrapper.jar \
+            app/src/main/cpp/megasource/libs/SDL3/android-project/gradle/wrapper/gradle-wrapper.jar
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
