@@ -271,8 +271,9 @@ function Game:set_globals()
     self.TILE_W = 20
     self.TILE_H = 11.5
     self.DRAW_HASH_BUFF = 2
-    self.CARD_W = 2.4*35/41
-    self.CARD_H = 2.4*47/41
+    self.TOUCH_CARD_SCALE = love.system.getOS() == 'Android' and 1.08 or 1
+    self.CARD_W = 2.4*35/41*self.TOUCH_CARD_SCALE
+    self.CARD_H = 2.4*47/41*self.TOUCH_CARD_SCALE
     self.HIGHLIGHT_H = 0.2*self.CARD_H
     self.COLLISION_BUFFER = 0.05
 

@@ -1121,8 +1121,9 @@ end
 
 function Game:init_window(reset)
     --Initialize the window
-    self.ROOM_PADDING_H= 0.7
-    self.ROOM_PADDING_W = 1
+    local touch_layout = love.system.getOS() == 'Android'
+    self.ROOM_PADDING_H = touch_layout and 0.4 or 0.7
+    self.ROOM_PADDING_W = touch_layout and 0.65 or 1
     self.WINDOWTRANS = {
         x = 0, y = 0,
         w = self.TILE_W+2*self.ROOM_PADDING_W, 
@@ -2216,18 +2217,20 @@ function Game:start_run(args)
         }))
     end
 
+    -- Keep the original horizontal layout while giving cards larger hit areas.
+    local area_card_w = G.CARD_W/(G.TOUCH_CARD_SCALE or 1)
     local CAI = {
         discard_W = G.CARD_W,
         discard_H = G.CARD_H,
         deck_W = G.CARD_W*1.1,
         deck_H = 0.95*G.CARD_H,
-        hand_W = 6*G.CARD_W,
+        hand_W = 6*area_card_w,
         hand_H = 0.95*G.CARD_H,
-        play_W = 5.3*G.CARD_W,
+        play_W = 5.3*area_card_w,
         play_H = 0.95*G.CARD_H,
-        joker_W = 4.9*G.CARD_W,
+        joker_W = 4.9*area_card_w,
         joker_H = 0.95*G.CARD_H,
-        consumeable_W = 2.3*G.CARD_W,
+        consumeable_W = 2.3*area_card_w,
         consumeable_H = 0.95*G.CARD_H
     }
 

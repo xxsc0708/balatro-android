@@ -984,15 +984,19 @@ end
   end
 
   function create_UIBox_buttons()
-    local text_scale = 0.45
-    local button_height = 1.3
-    local play_button = {n=G.UIT.C, config={id = 'play_button', align = "tm", minw = 2.5, padding = 0.3, r = 0.1, hover = true, colour = G.C.BLUE, button = "play_cards_from_highlighted", one_press = true, shadow = true, func = 'can_play'}, nodes={
+    local touch_layout = love.system.getOS() == 'Android'
+    local text_scale = touch_layout and 0.5 or 0.45
+    local button_height = touch_layout and 1.55 or 1.3
+    local button_width = touch_layout and 2.8 or 2.5
+    local sort_height = touch_layout and 0.9 or 0.7
+    local sort_width = touch_layout and 1.1 or 0.9
+    local play_button = {n=G.UIT.C, config={id = 'play_button', align = "tm", minw = button_width, minh = button_height, padding = 0.3, r = 0.1, hover = true, colour = G.C.BLUE, button = "play_cards_from_highlighted", one_press = true, shadow = true, func = 'can_play'}, nodes={
       {n=G.UIT.R, config={align = "bcm", padding = 0}, nodes={
         {n=G.UIT.T, config={text = localize('b_play_hand'), scale = text_scale, colour = G.C.UI.TEXT_LIGHT, focus_args = {button = 'x', orientation = 'bm'}, func = 'set_button_pip'}}
       }},
     }}
 
-    local discard_button = {n=G.UIT.C, config={id = 'discard_button',align = "tm", padding = 0.3, r = 0.1, minw = 2.5, minh = button_height, hover = true, colour = G.C.RED, button = "discard_cards_from_highlighted", one_press = true, shadow = true, func = 'can_discard'}, nodes={
+    local discard_button = {n=G.UIT.C, config={id = 'discard_button',align = "tm", padding = 0.3, r = 0.1, minw = button_width, minh = button_height, hover = true, colour = G.C.RED, button = "discard_cards_from_highlighted", one_press = true, shadow = true, func = 'can_discard'}, nodes={
       {n=G.UIT.R, config={align = "cm", padding = 0}, nodes={
         {n=G.UIT.T, config={text = localize('b_discard'), scale = text_scale, colour = G.C.UI.TEXT_LIGHT, focus_args = {button = 'y', orientation = 'bm'}, func = 'set_button_pip'}}
       }}
@@ -1008,10 +1012,10 @@ end
                 {n=G.UIT.T, config={text = localize('b_sort_hand'), scale = text_scale*0.8, colour = G.C.UI.TEXT_LIGHT}}
               }},
               {n=G.UIT.R, config={align = "cm", padding = 0.1}, nodes={
-                {n=G.UIT.C, config={align = "cm", minh = 0.7, minw = 0.9, padding = 0.1, r = 0.1, hover = true, colour =G.C.ORANGE, button = "sort_hand_value", shadow = true}, nodes={
+                {n=G.UIT.C, config={align = "cm", minh = sort_height, minw = sort_width, padding = 0.1, r = 0.1, hover = true, colour =G.C.ORANGE, button = "sort_hand_value", shadow = true}, nodes={
                   {n=G.UIT.T, config={text = localize('k_rank'), scale = text_scale*0.7, colour = G.C.UI.TEXT_LIGHT}}
                 }},
-                {n=G.UIT.C, config={align = "cm", minh = 0.7, minw = 0.9, padding = 0.1, r = 0.1, hover = true, colour =G.C.ORANGE, button = "sort_hand_suit", shadow = true}, nodes={
+                {n=G.UIT.C, config={align = "cm", minh = sort_height, minw = sort_width, padding = 0.1, r = 0.1, hover = true, colour =G.C.ORANGE, button = "sort_hand_suit", shadow = true}, nodes={
                   {n=G.UIT.T, config={text = localize('k_suit'), scale = text_scale*0.7, colour = G.C.UI.TEXT_LIGHT}}
                 }}
               }}
