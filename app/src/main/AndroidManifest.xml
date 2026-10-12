@@ -30,7 +30,7 @@
             android:name="org.love2d.android.GameActivity"
             android:label="Balatro"
             android:configChanges="orientation|screenSize|keyboardHidden|density|fontScale|layoutDirection|uiMode"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:launchMode="singleTask"
             android:exported="true"
             android:enableVrMode="false"

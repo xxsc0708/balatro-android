@@ -10,12 +10,13 @@ function love.conf(t)
     t.gammacorrect = true
 
     t.window.title = "Balatro"
-    t.window.width = 1440
-    t.window.height = 3200
-    t.window.minwidth = 720
-    t.window.minheight = 1280
+    t.window.width = 1280
+    t.window.height = 720
+    t.window.minwidth = 640
+    t.window.minheight = 360
     t.window.resizable = true
-    t.window.fullscreen = false
+    t.window.fullscreen = true
+    t.window.fullscreentype = "desktop"
     t.window.vsync = 1
     t.window.msaa = 0
     t.window.depth = 24

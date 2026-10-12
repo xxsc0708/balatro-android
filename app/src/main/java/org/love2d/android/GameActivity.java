@@ -23,6 +23,7 @@ package org.love2d.android;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -61,6 +62,12 @@ public class GameActivity extends SDLActivity {
     private boolean isFused;
 
     private static native void nativeSetDefaultStreamValues(int sampleRate, int framesPerBurst);
+
+    // Keep Balatro horizontal when SDL recreates or resizes its window.
+    @Override
+    public void setOrientationBis(int width, int height, boolean resizable, String hint) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+    }
 
     @Override
     protected String getMainSharedObject() {
