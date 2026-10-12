@@ -86,12 +86,12 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build Debug APK
-        run: ./gradlew :app:assembleNormalNoRecordDebug --stacktrace --no-build-cache 2>&1
+        run: ./gradlew :app:assembleEmbedNoRecordDebug --stacktrace --no-build-cache 2>&1
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: balatro-debug-apk
-          path: app/build/outputs/apk/normalNoRecord/debug/*.apk
+          path: app/build/outputs/apk/embedNoRecord/debug/*.apk
           retention-days: 30
           if-no-files-found: error

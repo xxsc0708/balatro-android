@@ -123,6 +123,8 @@ android {
 
     sourceSets {
         main {
+            // LÖVE discovers an embedded game at the APK assets root.
+            assets.setSrcDirs(['src/main/assets/game'])
             java {
                 srcDir 'src/main/cpp/megasource/libs/SDL3/android-project/app/src/main/java'
                 srcDir 'src/main/java'
