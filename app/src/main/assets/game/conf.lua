@@ -30,7 +30,7 @@ function love.conf(t)
     t.modules.font = true
     t.modules.graphics = true
     t.modules.image = true
-    t.modules.joystick = false
+    t.modules.joystick = true
     t.modules.keyboard = true
     t.modules.math = true
     t.modules.mouse = true
