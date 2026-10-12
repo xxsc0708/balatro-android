@@ -88,6 +88,22 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew :app:assembleEmbedNoRecordDebug --stacktrace --no-build-cache 2>&1
 
+      - name: Verify APK contents
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          apks = list(Path("app/build/outputs/apk/embedNoRecord/debug").glob("*.apk"))
+          assert len(apks) == 1, f"Expected one APK, found {apks}"
+          libraries = ["c++_shared", "SDL3", "oboe", "openal", "luajit", "liblove", "love"]
+          required = {"assets/main.lua", "assets/conf.lua"}
+          required.update(f"lib/arm64-v8a/lib{name}.so" for name in libraries)
+          with ZipFile(apks[0]) as apk:
+              missing = required - set(apk.namelist())
+              assert not missing, f"Missing APK entries: {sorted(missing)}"
+          print(f"Verified {apks[0]}: embedded game and all ARM64 runtime libraries present")
+          PY
+
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
